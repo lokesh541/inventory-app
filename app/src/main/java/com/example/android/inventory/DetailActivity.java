@@ -55,7 +55,7 @@ public class DetailActivity extends AppCompatActivity {
         if (cursor.moveToFirst()) {
             String imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_URL));
             imageView = (ImageView) findViewById(R.id.product_image);
-            Glide.with(this).load("http://goo.gl/gEgYUd").into(imageView);
+            Glide.with(this).load(imageUrl).into(imageView);
             String name = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME));
             TextView tvName = (TextView) findViewById(R.id.product_name);
             tvName.setText(name);
