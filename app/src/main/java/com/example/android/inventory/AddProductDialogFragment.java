@@ -21,8 +21,8 @@ import android.widget.TextView;
 public class AddProductDialogFragment extends DialogFragment {
 
     private InventoryDbHelper mDbHelper;
-    private EditText nameStr, quantityStr, priceStr;
-    private String productName;
+    private EditText nameStr, quantityStr, priceStr, imageUrlStr;
+    private String productName,imageUrl;
     private int quantity, price;
 
 
@@ -35,7 +35,7 @@ public class AddProductDialogFragment extends DialogFragment {
         mDbHelper = new InventoryDbHelper(getActivity());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View layout  = (View) inflater.inflate(R.layout.add_product_dialogue,null);
+        final View layout = (View) inflater.inflate(R.layout.add_product_dialogue, null);
         builder.setView(layout)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
@@ -43,12 +43,15 @@ public class AddProductDialogFragment extends DialogFragment {
                         nameStr = (EditText) layout.findViewById(R.id.product_name);
                         quantityStr = (EditText) layout.findViewById(R.id.quanntity);
                         priceStr = (EditText) layout.findViewById(R.id.price);
+                        imageUrlStr = (EditText) layout.findViewById(R.id.image_url);
+                      //  String pattern = "(http(s?):/)(/[^/]+)+" + "\.(?:jpg|gif|png)";
                         if (nameStr.getText().toString().trim().length() != 0) {
                             productName = nameStr.getText().toString();
                             quantity = Integer.parseInt(quantityStr.getText().toString().trim());
                             price = Integer.parseInt(priceStr.getText().toString().trim());
-                            mDbHelper.insertData(productName, price, quantity);
-                            ((MainActivity)getActivity()).onResume();
+                            imageUrl = imageUrlStr.getText().toString();
+                            mDbHelper.insertData(productName, price, quantity,imageUrl);
+                            ((MainActivity) getActivity()).onResume();
                         }
                     }
                 })

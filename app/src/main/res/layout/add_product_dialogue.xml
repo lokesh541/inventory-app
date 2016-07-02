@@ -34,6 +34,15 @@
         android:fontFamily="sans-serif"
         android:inputType="numberDecimal"
         android:hint="quantiy"/>
+
+    <EditText
+        android:id="@+id/image_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="sans-serif"
+        android:inputType="textAutoComplete"
+        android:hint="copy your image_url"/>
 </LinearLayout>
 
 

@@ -4,6 +4,9 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +14,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+
+
+import java.net.URL;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -24,6 +33,7 @@ public class DetailActivity extends AppCompatActivity {
     private int quantity;
     Intent intent;
     String id;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +49,13 @@ public class DetailActivity extends AppCompatActivity {
                 InventoryContract.InventoryEntry._ID + "=?"
                 , new String[]{id}, null, null, null);
 
-        Log.v(TAG, "something" + cursor.moveToFirst());
+
+
+
         if (cursor.moveToFirst()) {
+            String imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_URL));
+            imageView = (ImageView) findViewById(R.id.product_image);
+            Glide.with(this).load("http://goo.gl/gEgYUd").into(imageView);
             String name = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME));
             TextView tvName = (TextView) findViewById(R.id.product_name);
             tvName.setText(name);

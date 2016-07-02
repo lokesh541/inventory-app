@@ -14,7 +14,7 @@ import com.example.android.inventory.InventoryContract.InventoryEntry;
 public class InventoryDbHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "inventory-app.db";
+    public static final String DATABASE_NAME = "inventory-app-db.db";
 
     public InventoryDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,7 +26,8 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 InventoryEntry._ID + " INTEGER PRIMARY KEY ," +
                 InventoryEntry.COLUMN_PRODUCT_NAME + " TEXT UNIQUE NOT NULL, " +
                 InventoryEntry.COLUMN_QUANTITY + " INTEGER NOT NULL, " +
-                InventoryEntry.COLUMN_PRICE + " INTEGER NOT NULL " +
+                InventoryEntry.COLUMN_PRICE + " INTEGER NOT NULL, " +
+                InventoryEntry.COLUMN_URL + " TEXT NOT NULL" +
                 " );";
         sqLiteDatabase.execSQL(SQL_CREATE_PRODUCT_TABLE);
     }
@@ -42,12 +43,13 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
         super.onDowngrade(db, oldVersion, newVersion);
     }
 
-    public boolean insertData(String name,int price, int quantity) {
+    public boolean insertData(String name,int price, int quantity,String imageUrl) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(InventoryEntry.COLUMN_PRODUCT_NAME,name);
         values.put(InventoryEntry.COLUMN_QUANTITY, price);
         values.put(InventoryEntry.COLUMN_PRICE, quantity);
+        values.put(InventoryEntry.COLUMN_URL, imageUrl);
 
         long rowId = sqLiteDatabase.insert(InventoryEntry.TABLE_NAME, null, values);
         return rowId != -1;
