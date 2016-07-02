@@ -1,5 +1,6 @@
 package com.example.android.inventory;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 
@@ -29,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG = "database values";
+
+    private InventoryCursorAdapter cursorAdapter;
+    private Cursor inventoryCursor;
+    private InventoryDbHelper mHelper;
+    private ListView listView;
+    private SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +53,21 @@ public class MainActivity extends AppCompatActivity {
                         .build());
 
 
-        InventoryDbHelper mHelper = new InventoryDbHelper(this);
-        SQLiteDatabase sqLiteDatabase = mHelper.getWritableDatabase();
+        mHelper = new InventoryDbHelper(this);
+        sqLiteDatabase = mHelper.getWritableDatabase();
         Cursor inventoryCursor = sqLiteDatabase.rawQuery("SELECT  * FROM  products", null);
-        ListView listView = (ListView) findViewById(R.id.list);
-        final InventoryCursorAdapter cursorAdapter = new InventoryCursorAdapter(this, inventoryCursor, 0);
-        cursorAdapter.notifyDataSetChanged();
-        listView.setAdapter(cursorAdapter);
+        listView = (ListView) findViewById(R.id.list);
+        populateList();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String data = (String) cursorAdapter.getItem(position);
-                Intent intent = new Intent(MainActivity.this,DetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT,data);
+                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+                String id = cursor.getString(cursor.getColumnIndexOrThrow(InventoryEntry._ID));
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, id);
                 startActivity(intent);
+
             }
         });
         Button addProduct = (Button) findViewById(R.id.add);
@@ -76,5 +84,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
 
+        Cursor newCursor = sqLiteDatabase.rawQuery("SELECT  * FROM  products", null);
+        cursorAdapter.swapCursor(newCursor);
+        populateList();
+        super.onResume();
+
+    }
+
+
+    void populateList() {
+        if (cursorAdapter == null) {
+            cursorAdapter = new InventoryCursorAdapter(this, inventoryCursor, 0);
+            listView.setAdapter(cursorAdapter);
+        } else {
+            cursorAdapter.notifyDataSetChanged();
+        }
+    }
 }

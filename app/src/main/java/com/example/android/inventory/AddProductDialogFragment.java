@@ -48,6 +48,7 @@ public class AddProductDialogFragment extends DialogFragment {
                             quantity = Integer.parseInt(quantityStr.getText().toString().trim());
                             price = Integer.parseInt(priceStr.getText().toString().trim());
                             mDbHelper.insertData(productName, price, quantity);
+                            ((MainActivity)getActivity()).onResume();
                         }
                     }
                 })
