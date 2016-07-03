@@ -45,7 +45,12 @@ public class AddProductDialogFragment extends DialogFragment {
                         priceStr = (EditText) layout.findViewById(R.id.price);
                         imageUrlStr = (EditText) layout.findViewById(R.id.image_url);
                       //  String pattern = "(http(s?):/)(/[^/]+)+" + "\.(?:jpg|gif|png)";
-                        if (nameStr.getText().toString().trim().length() != 0) {
+                        int nameLen = nameStr.getText().toString().trim().length();
+                        int qtyLen = quantityStr.getText().toString().trim().length();
+                        int priceLen = priceStr.getText().toString().trim().length();
+                        int urlLen =  imageUrlStr.getText().toString().trim().length();
+
+                        if ( nameLen!= 0 && qtyLen != 0 && priceLen != 0 && urlLen !=0) {
                             productName = nameStr.getText().toString();
                             quantity = Integer.parseInt(quantityStr.getText().toString().trim());
                             price = Integer.parseInt(priceStr.getText().toString().trim());

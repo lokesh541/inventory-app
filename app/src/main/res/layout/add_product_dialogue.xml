@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:fontFamily="sans-serif"
-        android:hint="price"
+        android:hint="quantity"
         android:inputType="number" />
 
     <EditText
@@ -33,7 +33,7 @@
         android:layout_margin="8dp"
         android:fontFamily="sans-serif"
         android:inputType="numberDecimal"
-        android:hint="quantiy"/>
+        android:hint="price"/>
 
     <EditText
         android:id="@+id/image_url"

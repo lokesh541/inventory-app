@@ -1,5 +1,6 @@
 package com.example.android.inventory;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private InventoryDbHelper mHelper;
     private ListView listView;
     private SQLiteDatabase sqLiteDatabase;
+    String id;
+    int quantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,21 +59,29 @@ public class MainActivity extends AppCompatActivity {
 
         mHelper = new InventoryDbHelper(this);
         sqLiteDatabase = mHelper.getWritableDatabase();
-        Cursor inventoryCursor = sqLiteDatabase.rawQuery("SELECT  * FROM  products", null);
+         inventoryCursor = sqLiteDatabase.rawQuery("SELECT  * FROM  products", null);
         listView = (ListView) findViewById(R.id.list);
+        TextView emptyText = (TextView) findViewById(android.R.id.empty);
+        listView.setEmptyView(emptyText);
+
         populateList();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
-                String id = cursor.getString(cursor.getColumnIndexOrThrow(InventoryEntry._ID));
+                inventoryCursor = (Cursor) listView.getItemAtPosition(position);
+                id = inventoryCursor.getString(inventoryCursor.getColumnIndexOrThrow(InventoryEntry._ID));
+                quantity = inventoryCursor.getInt(inventoryCursor.getColumnIndexOrThrow(InventoryEntry.COLUMN_QUANTITY));
+
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class)
                         .putExtra(Intent.EXTRA_TEXT, id);
                 startActivity(intent);
 
             }
         });
+
+
+
         Button addProduct = (Button) findViewById(R.id.add);
         addProduct.setOnClickListener(new View.OnClickListener() {
             @Override

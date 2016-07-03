@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.nfc.Tag;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 
+import java.io.InputStream;
 import java.net.URL;
 
 public class DetailActivity extends AppCompatActivity {
@@ -32,8 +34,9 @@ public class DetailActivity extends AppCompatActivity {
     private String price;
     private int quantity;
     Intent intent;
-    String id;
+    String id, imageUrl;
     ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +53,14 @@ public class DetailActivity extends AppCompatActivity {
                 , new String[]{id}, null, null, null);
 
 
-
-
         if (cursor.moveToFirst()) {
-            String imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_URL));
-            imageView = (ImageView) findViewById(R.id.product_image);
-            Glide.with(this).load(imageUrl).into(imageView);
+
+            imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_URL));
+           // imageView = (ImageView) findViewById(R.id.product_image);
+           // imageView.setTag(imageUrl);
+            new DownloadImageTask((ImageView) findViewById(R.id.product_image))
+                    .execute(imageUrl);
+
             String name = cursor.getString(cursor.getColumnIndexOrThrow(InventoryContract.InventoryEntry.COLUMN_PRODUCT_NAME));
             TextView tvName = (TextView) findViewById(R.id.product_name);
             tvName.setText(name);
@@ -147,4 +152,30 @@ public class DetailActivity extends AppCompatActivity {
                 new String[]{id});
     }
 
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
 }
+
